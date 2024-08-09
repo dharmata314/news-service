@@ -81,6 +81,18 @@ func CreateTable(ctx context.Context, db *pgxpool.Pool, log *slog.Logger, cfg *c
 		log.Error("failed to create newsCategories table", slog.String("error", err.Error()))
 		return fmt.Errorf("failed to create newsCategories table")
 	}
+
+	_, err = db.Exec(ctx, `
+	CREATE TABLE IF NOT EXISTS Users (
+	    id SERIAL PRIMARY KEY, 
+	    email VARCHAR(100) UNIQUE NOT NULL, 
+	    password VARCHAR(255) NOT NULL,
+	    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP)
+	`)
+	if err != nil {
+		log.Error("failed to create users table", slog.String("error", err.Error()))
+		return fmt.Errorf("failed to create users table: %w", err)
+	}
 	return nil
 
 }

@@ -3,7 +3,7 @@ http_server:
   timeout: 10s
   idle_timeout: 120s
 database:
-  host: localhost
+  host: postgres
   port: 5432
   user: postgres
   password: postgres

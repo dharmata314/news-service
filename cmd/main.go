@@ -10,7 +10,10 @@ import (
 	categoriesrepo "news-service/internal/database/categoriesRepo"
 	newscategoriesrepo "news-service/internal/database/newsCategoriesRepo"
 	newsrepo "news-service/internal/database/newsRepo"
+	usersrepo "news-service/internal/database/usersRepo"
 	newshandler "news-service/internal/handlers/NewsHandler"
+	userhandlers "news-service/internal/handlers/userHandler"
+	"news-service/internal/jwt"
 	"os"
 
 	errMsg "news-service/internal/err"
@@ -58,10 +61,24 @@ func main() {
 	newsRepository := newsrepo.NewNewsRepository(pg.Db, log)
 	categoriesRepository := categoriesrepo.NewCategoriesRepository(pg.Db, log)
 	newsCategoriesRepository := newscategoriesrepo.NewNewsCategoriesRepository(pg.Db, log)
+	userRepository := usersrepo.NewUserRepository(pg.Db, log)
 
-	router.Post("/news", newshandler.NewNews(log, newsRepository, categoriesRepository, newsCategoriesRepository))
-	router.Get("/list", newshandler.ListAllNews(log, newsRepository, newsCategoriesRepository))
-	router.Patch("/news/{id}", newshandler.UpdateNews(log, newsRepository, categoriesRepository, newsCategoriesRepository))
+	jwtManager := jwt.NewJWTManager(cfg.JWT.Secret, log)
+
+	router.Post("/users/new", userhandlers.NewUser(log, userRepository))
+	router.Post("/login", userhandlers.LoginFunc(log, userRepository, jwtManager))
+
+	router.With(func(next http.Handler) http.Handler {
+		return jwt.TokenAuthMiddleware(jwtManager, next)
+	}).Post("/news", newshandler.NewNews(log, newsRepository, categoriesRepository, newsCategoriesRepository))
+
+	router.With(func(next http.Handler) http.Handler {
+		return jwt.TokenAuthMiddleware(jwtManager, next)
+	}).Get("/list", newshandler.ListAllNews(log, newsRepository, newsCategoriesRepository))
+
+	router.With(func(next http.Handler) http.Handler {
+		return jwt.TokenAuthMiddleware(jwtManager, next)
+	}).Patch("/news/edit/{id}", newshandler.UpdateNews(log, newsRepository, categoriesRepository, newsCategoriesRepository))
 
 	server := &http.Server{
 		Addr:              cfg.HTTPServer.Addr,
