@@ -75,9 +75,9 @@ http://localhost:8080/list
 ```
 Изменение новости:
 ```
-app curl -X PATCH \
+curl -X PATCH \
 -H "Authorization: Bearer <token>" \
 -H "Content-Type: application/json" \
--d '{"Id": 1, "Title": "New_Name", "Content": "New_Content", "New_Categories": [1,2,3]}' \
+-d '{"Id": 1, "Title": "New_Name", "Content": "New_Content", "Categories": [1,2,3]}' \
 http://localhost:8080/news/edit/{id}
 ```
