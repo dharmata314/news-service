@@ -69,7 +69,7 @@ http://localhost:8080/news
 ```
 Получение списка всех новостей
 ```
-docker-compose exec curl -X GET \
+curl -X GET \
 -H "Authorization: Bearer <token>" \
 http://localhost:8080/list
 ```
