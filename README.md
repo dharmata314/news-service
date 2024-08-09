@@ -5,7 +5,7 @@
 В конфиге содержатся основные данные, необходимые для работы приложения.
 
 ### Docker 
-Для развертывания в Docker Compose создан файл [docker-compose.yml](https://github.com/dharmata314/news-service/blob/main/docker-compose.yml)
+Для развертывания в Docker Compose создан файл [docker-compose.yaml](https://github.com/dharmata314/news-service/blob/main/docker-compose.yaml)
 Необходимо запустить команду
 ```
 docker compose up --build app
