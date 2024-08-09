@@ -29,7 +29,13 @@ func (n *NewsCategoriesRepository) Create(ctx context.Context, NC *entities.News
 
 func (n *NewsCategoriesRepository) ListCategories(ctx context.Context, id int) ([]int, error) {
 	var arrayId []int
-	err := n.db.QueryRow(ctx, `SELECT array_agg(category_id) FROM NewsCategories WHERE news_id = $1`, id).Scan(&arrayId)
+	err := n.db.QueryRow(ctx, `
+ 	SELECT array_agg(c.name)
+	FROM Categories c
+	WHERE c.id = ANY(
+    	SELECT nc.category_id
+   	 FROM NewsCategories nc
+    	WHERE nc.news_id = $1)`, id).Scan(&arrayId)
 	if err != nil {
 		n.log.Error("failed to list categories", errMsg.Err(err))
 		return nil, err
