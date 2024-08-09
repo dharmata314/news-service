@@ -70,13 +70,13 @@ func UpdateNews(log *slog.Logger, NewsRepository models.NewsRepository, Categori
 			categorie := entities.Categorie{Name: categorie_name}
 			err = CategoriesRepository.CreateCategorie(r.Context(), &categorie)
 			if err != nil {
-				log.Error("could not update categorie to the table", errMsg.Err(err))
+				log.Error("could not update categorie in the table", errMsg.Err(err))
 				return
 			}
 
 			err = NewsCategoriesRepository.UpdateNewsCategories(r.Context(), categorie.ID, newsID)
 			if err != nil {
-				log.Error("could not update Newscategories relation to the table", errMsg.Err(err))
+				log.Error("could not update Newscategories relation in the table", errMsg.Err(err))
 				return
 			}
 		}
