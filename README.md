@@ -75,7 +75,7 @@ http://localhost:8080/list
 ```
 Изменение новости:
 ```
-docker-compose exec app curl -X PATCH \
+app curl -X PATCH \
 -H "Authorization: Bearer <token>" \
 -H "Content-Type: application/json" \
 -d '{"Id": 1, "Title": "New_Name", "Content": "New_Content", "New_Categories": [1,2,3]}' \
